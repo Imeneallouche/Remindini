@@ -1,0 +1,12 @@
+/home/im3ne/Desktop/GitHub/IoT-Project/mobile_web_app/build/linux/x64/debug/bundle/mobile_web_app
+/home/im3ne/Desktop/GitHub/IoT-Project/mobile_web_app/build/linux/x64/debug/bundle/data/icudtl.dat
+/home/im3ne/Desktop/GitHub/IoT-Project/mobile_web_app/build/linux/x64/debug/bundle/lib/libflutter_linux_gtk.so
+/home/im3ne/Desktop/GitHub/IoT-Project/mobile_web_app/build/linux/x64/debug/bundle/data/flutter_assets/kernel_blob.bin
+/home/im3ne/Desktop/GitHub/IoT-Project/mobile_web_app/build/linux/x64/debug/bundle/data/flutter_assets/fonts/MaterialIcons-Regular.otf
+/home/im3ne/Desktop/GitHub/IoT-Project/mobile_web_app/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.json
+/home/im3ne/Desktop/GitHub/IoT-Project/mobile_web_app/build/linux/x64/debug/bundle/data/flutter_assets/AssetManifest.bin
+/home/im3ne/Desktop/GitHub/IoT-Project/mobile_web_app/build/linux/x64/debug/bundle/data/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf
+/home/im3ne/Desktop/GitHub/IoT-Project/mobile_web_app/build/linux/x64/debug/bundle/data/flutter_assets/shaders/ink_sparkle.frag
+/home/im3ne/Desktop/GitHub/IoT-Project/mobile_web_app/build/linux/x64/debug/bundle/data/flutter_assets/FontManifest.json
+/home/im3ne/Desktop/GitHub/IoT-Project/mobile_web_app/build/linux/x64/debug/bundle/data/flutter_assets/NOTICES.Z
+/home/im3ne/Desktop/GitHub/IoT-Project/mobile_web_app/build/linux/x64/debug/bundle/data/flutter_assets/version.json
