@@ -22,7 +22,7 @@ BACKEND_URL = "http://192.168.43.38:5000"  # Server URL
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("signup.html")
 
 @app.route("/signup", methods=["POST", "GET"])
 def register():
