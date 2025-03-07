@@ -129,3 +129,22 @@ body {
 .app-logo {
   margin-right: 10px;
 }
+
+
+.error-message {
+  font-size: 24px;
+  font-weight: bold;
+  color: red;
+  text-align: center;
+  margin-top: 20px;
+}
+.error-container {
+  background-color: #ffe6e6;
+  border: 1px solid red;
+  padding: 15px;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 18px;
+  color: #a00;
+  margin: 20px 0;
+}

@@ -4,8 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Remindini | Dashboard</title>
-    <link rel="stylesheet" href="css/common.css" />
-    <link rel="stylesheet" href="css/dashboard.css" />
+    <link rel="stylesheet" href="static/css/dashboard.css" />
   </head>
   <body>
     <div class="dashboard-container">
@@ -16,25 +15,25 @@
         </div>
         <ul class="sidebar-menu">
           <li class="active">
-            <a href="dashboard.html" id="nav-dashboard">
+            <a href="#" id="nav-dashboard">
               <span class="icon">📊</span>
               Dashboard
             </a>
           </li>
           <li>
-            <a href="calendar.html" id="nav-calendar">
+            <a href="#" id="nav-calendar">
               <span class="icon">🗓️</span>
               Calendar
             </a>
           </li>
           <li>
-            <a href="edge.html" id="nav-edge">
+            <a href="#" id="nav-edge">
               <span class="icon">🌡️</span>
               Edge
             </a>
           </li>
           <li>
-            <a href="settings.html" id="nav-settings">
+            <a href="#" id="nav-settings">
               <span class="icon">⚙️</span>
               Settings
             </a>
@@ -52,11 +51,11 @@
           <div class="user-info">
             <!-- Suppose we got the user info from the backend after sign-in -->
             <img
-              src="assets/images/user_avatar.png"
+              src="static/assets/images/user_avatar.png"
               alt="User Avatar"
               class="user-avatar"
             />
-            <span id="userName">Imène ALOUCHE</span>
+            <span id="userName">{{username}}</span>
           </div>
         </header>
 
@@ -84,6 +83,5 @@
       </div>
     </div>
 
-    <script src="js/dashboard.js"></script>
   </body>
 </html>
