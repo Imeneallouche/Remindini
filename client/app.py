@@ -20,8 +20,10 @@ app.secret_key = "secret_key"  # Replace with a real secret key
 
 BACKEND_URL = "http://192.168.43.38:5000"  # Server URL
 
-@app.route("/")
+@app.route("/", methods=["POST", "GET"])
 def index():
+    if request.method == "POST":
+        return register() 
     return render_template("signup.html")
 
 @app.route("/signup", methods=["POST", "GET"])
