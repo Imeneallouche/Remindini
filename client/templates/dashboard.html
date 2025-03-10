@@ -4,36 +4,37 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Remindini | Dashboard</title>
-    <link rel="stylesheet" href="static/css/dashboard.css" />
+    <link rel="stylesheet" href="../static/css/dashboard.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <div class="dashboard-container">
-      <!-- Sidebar / Navigation -->
+      <!-- Sidebar -->
       <nav class="sidebar">
         <div class="sidebar-header">
           <h2>Remindini</h2>
         </div>
         <ul class="sidebar-menu">
           <li class="active">
-            <a href="#" id="nav-dashboard">
+            <a href="#">
               <span class="icon">📊</span>
               Dashboard
             </a>
           </li>
           <li>
-            <a href="#" id="nav-calendar">
+            <a href="calendar.html">
               <span class="icon">🗓️</span>
               Calendar
             </a>
           </li>
           <li>
-            <a href="#" id="nav-edge">
+            <a href="edge.html">
               <span class="icon">🌡️</span>
               Edge
             </a>
           </li>
           <li>
-            <a href="#" id="nav-settings">
+            <a href="settings.html">
               <span class="icon">⚙️</span>
               Settings
             </a>
@@ -49,39 +50,83 @@
             <h1>Dashboard</h1>
           </div>
           <div class="user-info">
-            <!-- Suppose we got the user info from the backend after sign-in -->
             <img
-              src="static/assets/images/user_avatar.png"
+              src="assets/images/user_avatar.png"
               alt="User Avatar"
               class="user-avatar"
             />
-            <span id="userName">{{username}}</span>
+            <span id="userName">Imène ALOUCHE</span>
           </div>
         </header>
 
-        <!-- Content Cards -->
-        <section class="cards-container">
-          <div class="card sms-success-card">
-            <h3>Number of SMS sent</h3>
-            <p id="smsSuccessCount">0 SMS</p>
-            <small>This week's statistics</small>
+        <!-- Content Section -->
+        <section class="cards-section">
+          <!-- Row 1: SMS Stats + Temperature Circle -->
+          <div class="top-row">
+            <div class="sms-cards">
+              <div class="card sms-success-card">
+                <h3>Number of SMS sent</h3>
+                <p id="smsSuccessCount">0 SMS</p>
+                <small>This week's statistics</small>
+              </div>
+
+              <div class="card sms-failed-card">
+                <h3>Number of SMS that failed to send</h3>
+                <p id="smsFailedCount">0 SMS</p>
+                <small>This week's statistics</small>
+              </div>
+            </div>
+
+            <div class="card temperature-card">
+              <h3>Current Temperature Caught by Edge</h3>
+              <div class="temperature-circle">
+                <span id="currentTemperature">--°C</span>
+              </div>
+            </div>
           </div>
 
-          <div class="card sms-failed-card">
-            <h3>Number of SMS that failed to send</h3>
-            <p id="smsFailedCount">0 SMS</p>
-            <small>+X from last week</small>
-          </div>
+          <!-- Row 2: History of Temperature Monitoring -->
+          <div class="bottom-row">
+            <div class="card history-card">
+              <div class="history-header">
+                <div>
+                  <h3>History of temperature monitoring</h3>
+                  <p class="sub-title">For a whole week</p>
+                </div>
+                <div class="monitoring-duration-form">
+                  <label for="durationValue">Monitoring Duration</label>
+                  <div class="duration-inputs">
+                    <input
+                      type="number"
+                      id="durationValue"
+                      name="durationValue"
+                      min="1"
+                      value="1"
+                    />
+                    <select id="durationUnit" name="durationUnit">
+                      <option value="hour">hour</option>
+                      <option value="day">day</option>
+                      <option value="week" selected>week</option>
+                      <option value="month">month</option>
+                      <option value="year">year</option>
+                    </select>
+                    <button id="updateDurationBtn" class="btn-update">
+                      Update
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-          <div class="card temperature-card">
-            <h3>Current Temperature Caught by Edge</h3>
-            <div class="temperature-display">
-              <p id="currentTemperature">--°C</p>
+              <div class="chart-container">
+                <canvas id="tempChart"></canvas>
+              </div>
             </div>
           </div>
         </section>
       </div>
     </div>
 
+    <!-- Main JavaScript for the page -->
+    <script src="../static/js/dashboard.js"></script>
   </body>
 </html>
