@@ -15,27 +15,21 @@
         </div>
         <ul class="sidebar-menu">
           <li>
-            <a href="dashboard.html">
+            <a href="{{ url_for('dashboard') }}">
               <span class="icon">📊</span>
               Dashboard
             </a>
           </li>
-          <li>
-            <a href="calendar.html">
-              <span class="icon">🗓️</span>
-              Calendar
-            </a>
-          </li>
-          <li>
-            <a href="edge.html">
-              <span class="icon">🌡️</span>
-              Edge
-            </a>
-          </li>
           <li class="active">
-            <a href="settings.html">
+            <a href="{{ url_for('settings') }}">
               <span class="icon">⚙️</span>
               Settings
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('signout') }}">
+              <span class="icon">🔚</span>
+              Sign Out
             </a>
           </li>
         </ul>
@@ -54,7 +48,7 @@
               alt="User Avatar"
               class="user-avatar"
             />
-            <span id="userName">Imène ALOUCHE</span>
+            <span id="userName">{{username}}</span>
           </div>
         </header>
 
