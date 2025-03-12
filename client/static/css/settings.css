@@ -97,7 +97,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 /* Functionalities Manipulation */
@@ -115,7 +115,9 @@
 }
 
 .functionality-item {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 1rem;
 }
 
 .functionality-item h3 {
@@ -142,14 +144,9 @@
 
 /* SMS Reminder Duration Update */
 .reminder-duration-item {
-  border-top: 1px solid #e0e0e0;
+  display: none;
   padding-top: 1rem;
-}
-
-.reminder-duration-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  margin-top: 0rem;
 }
 
 .duration-inputs {
@@ -171,6 +168,35 @@
   border-radius: 4px;
 }
 
+/* Threshold Settings for Temperature and Humidity */
+.threshold-settings-item {
+  display: none;
+  padding-top: 0.5rem;
+  margin-top: 0rem;
+}
+
+.threshold-settings-form {
+  margin-top: 0.5rem;
+}
+
+.threshold-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.threshold-inputs input[type="number"] {
+  width: 60px;
+  padding: 0.4rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.unit-label {
+  color: #666;
+}
+
 .btn-update {
   background-color: #4285f4;
   color: #fff;
@@ -182,6 +208,28 @@
 
 .btn-update:hover {
   background-color: #3071e8;
+}
+
+/* Sensor items within functionality item */
+.sensor-item {
+  margin-left: 1rem;
+  margin-bottom: 0rem;
+  padding-bottom: 1rem;
+}
+
+.sensor-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.sensor-item h4 {
+  margin: 0.5rem 0;
+}
+
+.sensor-item p {
+  margin: 0.5rem 0 1rem;
+  color: #666;
 }
 
 /* Account Updates */
