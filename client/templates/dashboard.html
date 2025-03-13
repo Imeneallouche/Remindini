@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Remindini | Dashboard</title>
-    <link rel="stylesheet" href="../static/css/dashboard.css" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  </head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Remindini | Dashboard</title>
+        <link rel="stylesheet" href="../static/css/dashboard.css" />
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      </head>
   <body>
     <div class="dashboard-container">
       <!-- Sidebar -->
@@ -55,7 +55,7 @@
 
         <!-- Content Section -->
         <section class="cards-section">
-          <!-- Row 1: SMS Stats + Temperature Circle -->
+          <!-- Row 1: SMS Stats -->
           <div class="top-row">
             <div class="sms-cards">
               <div class="card sms-success-card">
@@ -63,56 +63,46 @@
                 <p id="smsSuccessCount">0 SMS</p>
                 <small>This week's statistics</small>
               </div>
-
-              <div class="card sms-failed-card">
-                <h3>Number of SMS that failed to send</h3>
-                <p id="smsFailedCount">0 SMS</p>
-                <small>This week's statistics</small>
-              </div>
-            </div>
-
-            <div class="card temperature-card">
-              <h3>Current Temperature Caught by Edge</h3>
-              <div class="temperature-circle">
-                <span id="currentTemperature">--°C</span>
-              </div>
             </div>
           </div>
 
-          <!-- Row 2: History of Temperature Monitoring -->
+          <!-- Row 2: Temperature and Humidity Gauges -->
           <div class="bottom-row">
-            <div class="card history-card">
-              <div class="history-header">
+            <div class="card gauges-card">
+              <div class="gauges-header">
                 <div>
-                  <h3>History of temperature monitoring</h3>
-                  <p class="sub-title">For a whole week</p>
+                  <h3>Environmental Monitoring</h3>
+                  <p class="sub-title">Real-time measurements</p>
                 </div>
-                <div class="monitoring-duration-form">
-                  <label for="durationValue">Monitoring Duration</label>
-                  <div class="duration-inputs">
-                    <input
-                      type="number"
-                      id="durationValue"
-                      name="durationValue"
-                      min="1"
-                      value="1"
-                    />
-                    <select id="durationUnit" name="durationUnit">
-                      <option value="hour">hour</option>
-                      <option value="day">day</option>
-                      <option value="week" selected>week</option>
-                      <option value="month">month</option>
-                      <option value="year">year</option>
-                    </select>
-                    <button id="updateDurationBtn" class="btn-update">
-                      Update
-                    </button>
-                  </div>
+                <div class="refresh-controls">
+                  <button id="refreshGaugesBtn" class="btn-update">
+                    Refresh Data
+                  </button>
                 </div>
               </div>
 
-              <div class="chart-container">
-                <canvas id="tempChart"></canvas>
+              <div class="gauges-container">
+                <div class="gauge-wrapper">
+                  <h4>Temperature</h4>
+                  <canvas id="tempGauge"></canvas>
+                  <div class="gauge-value">
+                    <span id="currentTemperature">--</span>°C
+                  </div>
+                  <div class="threshold-info">
+                    <span>Threshold: <span id="tempThreshold">--</span>°C</span>
+                  </div>
+                </div>
+                
+                <div class="gauge-wrapper">
+                  <h4>Humidity</h4>
+                  <canvas id="humidityGauge"></canvas>
+                  <div class="gauge-value">
+                    <span id="currentHumidity">--</span>%
+                  </div>
+                  <div class="threshold-info">
+                    <span>Threshold: <span id="humidityThreshold">--</span>%</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

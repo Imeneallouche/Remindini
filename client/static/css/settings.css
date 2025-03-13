@@ -3,7 +3,7 @@
 /* Layout Container */
 .dashboard-container {
   display: flex;
-  min-height: 100vh;
+  min-height: full;
   margin: 0;
   font-family: "Arial", sans-serif;
   background-color: #f2f2f2;
@@ -91,18 +91,22 @@
   margin-right: 0.5rem;
 }
 
+.sidebar-header {
+  cursor: pointer;
+}
+
 /* Settings Section */
 .settings-section {
-  padding: 2rem;
+  padding: 1rem;
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 /* Functionalities Manipulation */
-.functionality-manipulation,
-.account-updates {
+.functionality-manipulation {
+ 
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -116,6 +120,7 @@
 
 .functionality-item {
   margin-bottom: 1rem;
+  margin-right: 3%;
   border-bottom: 1px solid #e0e0e0;
   padding-bottom: 1rem;
 }
@@ -233,11 +238,15 @@
 }
 
 /* Account Updates */
+/*.account-updates {
+margin-top: 3rem;
+background-color: #d32f2f;}*/
+
 .account-updates .update-item {
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-top: 1rem;
+  margin-top: 3rem;
 }
 
 .account-updates label {

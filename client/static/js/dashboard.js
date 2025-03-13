@@ -5,39 +5,108 @@ const SERVER_URL = "http://<RASPBERRY_PI_IP>:5000";
 
 // DOM elements for SMS stats
 const smsSuccessCountEl = document.getElementById("smsSuccessCount");
-const smsFailedCountEl = document.getElementById("smsFailedCount");
 
-// DOM elements for temperature
+// DOM elements for gauges
 const currentTemperatureEl = document.getElementById("currentTemperature");
+const currentHumidityEl = document.getElementById("currentHumidity");
+const tempThresholdEl = document.getElementById("tempThreshold");
+const humidityThresholdEl = document.getElementById("humidityThreshold");
+const refreshGaugesBtn = document.getElementById("refreshGaugesBtn");
 
-// DOM elements for chart
-let tempChart;
-const durationValueInput = document.getElementById("durationValue");
-const durationUnitSelect = document.getElementById("durationUnit");
-const updateDurationBtn = document.getElementById("updateDurationBtn");
+// Sidebar header element
+const sidebarHeader = document.querySelector(".sidebar-header");
+
+// Gauge objects
+let tempGauge;
+let humidityGauge;
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Fetch SMS stats
+  // 1. Initialize gauges
+  initGauges();
+  
+  // 2. Fetch SMS stats
   fetchSmsStats();
-
-  // 2. Set up the real-time temperature fetch
-  fetchCurrentTemperature();
-  setInterval(fetchCurrentTemperature, 5000); // Update every 5 seconds
-
-  // 3. Initialize the chart
-  initChart();
-
-  // 4. Fetch initial temperature history
-  fetchTemperatureHistory();
-
-  // 5. Handle the "Update" button for chart duration
-  updateDurationBtn.addEventListener("click", () => {
-    fetchTemperatureHistory();
+  
+  // 3. Fetch environmental data (temperature and humidity)
+  fetchEnvironmentalData();
+  
+  // 4. Set up refresh button
+  refreshGaugesBtn.addEventListener("click", () => {
+    fetchEnvironmentalData();
+  });
+  
+  // 5. Set up auto-refresh interval (every 30 seconds)
+  setInterval(fetchEnvironmentalData, 30000);
+  
+  // 6. Add click event for sidebar header to navigate to dashboard
+  sidebarHeader.addEventListener("click", () => {
+    window.location.href = "/dashboard";
   });
 });
 
 /**
- * Fetches the SMS stats (success/fail) for the current week.
+ * Initializes the temperature and humidity gauges using doughnut charts
+ */
+function initGauges() {
+  // Temperature gauge
+  const tempCtx = document.getElementById("tempGauge").getContext("2d");
+  tempGauge = new Chart(tempCtx, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [0, 200],
+        backgroundColor: ['#ff7043', '#e0e0e0'],
+        borderWidth: 0,
+        circumference: 180,
+        rotation: 270
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      cutout: '70%',
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          enabled: false
+        }
+      }
+    }
+  });
+  
+  // Humidity gauge
+  const humidityCtx = document.getElementById("humidityGauge").getContext("2d");
+  humidityGauge = new Chart(humidityCtx, {
+    type: 'doughnut',
+    data: {
+      datasets: [{
+        data: [0, 100],
+        backgroundColor: ['#29b6f6', '#e0e0e0'],
+        borderWidth: 0,
+        circumference: 180,
+        rotation: 270
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      cutout: '70%',
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          enabled: false
+        }
+      }
+    }
+  });
+}
+
+/**
+ * Fetches the SMS stats (success count) for the current week.
  */
 async function fetchSmsStats() {
   try {
@@ -46,114 +115,84 @@ async function fetchSmsStats() {
       throw new Error(`Error fetching SMS stats: ${response.status}`);
     }
     const data = await response.json();
-    // Suppose data = { successCount: 10, failCount: 2 }
     smsSuccessCountEl.textContent = `${data.successCount} SMS`;
-    smsFailedCountEl.textContent = `${data.failCount} SMS`;
   } catch (error) {
     console.error(error);
+    smsSuccessCountEl.textContent = "-- SMS";
   }
 }
 
 /**
- * Fetches the current temperature from the server.
+ * Fetches environmental data (temperature and humidity) from the server.
  */
-async function fetchCurrentTemperature() {
+async function fetchEnvironmentalData() {
   try {
-    const response = await fetch(`${SERVER_URL}/api/current-temperature`);
+    const response = await fetch(`${SERVER_URL}/api/environmental-data`);
     if (!response.ok) {
-      throw new Error(`Error fetching temperature: ${response.status}`);
+      throw new Error(`Error fetching environmental data: ${response.status}`);
     }
     const data = await response.json();
-    // Suppose data = { temperature: 26 }
-    currentTemperatureEl.textContent = `${data.temperature}°C`;
+    
+    // Update gauges with received data
+    updateTemperatureGauge(data.temperature.current, data.temperature.threshold);
+    updateHumidityGauge(data.humidity.current, data.humidity.threshold);
   } catch (error) {
     console.error(error);
+    currentTemperatureEl.textContent = "--";
+    currentHumidityEl.textContent = "--";
+    tempThresholdEl.textContent = "--";
+    humidityThresholdEl.textContent = "--";
   }
 }
 
 /**
- * Initializes the Chart.js line chart.
+ * Updates the temperature gauge with new values
+ * @param {number} current - The current temperature
+ * @param {number} threshold - The temperature threshold
  */
-function initChart() {
-  const ctx = document.getElementById("tempChart").getContext("2d");
-  tempChart = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: [],
-      datasets: [
-        {
-          label: "Temperature (°C)",
-          data: [],
-          fill: false,
-          borderColor: "#4285f4",
-          tension: 0.1,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: {
-          title: {
-            display: true,
-            text: "Time",
-          },
-        },
-        y: {
-          title: {
-            display: true,
-            text: "Temperature (°C)",
-          },
-          beginAtZero: false,
-        },
-      },
-    },
-  });
-}
-
-/**
- * Fetches the temperature history for the chosen duration.
- */
-async function fetchTemperatureHistory() {
-  const value = parseInt(durationValueInput.value, 10);
-  const unit = durationUnitSelect.value;
-
-  try {
-    // GET /api/temperature-history?value=1&unit=week
-    const response = await fetch(
-      `${SERVER_URL}/api/temperature-history?value=${value}&unit=${unit}`
-    );
-    if (!response.ok) {
-      throw new Error(`Error fetching temperature history: ${response.status}`);
-    }
-    const data = await response.json();
-    // data = [
-    //   { timestamp: "2025-03-01T12:00:00", temperature: 25.5 },
-    //   ...
-    // ]
-    updateChart(data);
-  } catch (error) {
-    console.error(error);
+function updateTemperatureGauge(current, threshold) {
+  // Calculate percentage (0-50°C range is typical for room temperature)
+  const maxTemp = 50;
+  const percentage = (current / maxTemp) * 100;
+  
+  // Update gauge value - limit to 100%
+  const cappedPercentage = Math.min(percentage, 100);
+  tempGauge.data.datasets[0].data = [cappedPercentage, 100 - cappedPercentage];
+  tempGauge.update();
+  
+  // Update text display
+  currentTemperatureEl.textContent = current.toFixed(1);
+  tempThresholdEl.textContent = threshold.toFixed(1);
+  
+  // Apply visual indication if temperature exceeds threshold
+  if (current > threshold) {
+    currentTemperatureEl.parentElement.style.color = '#f44336';
+  } else {
+    currentTemperatureEl.parentElement.style.color = '#333';
   }
 }
 
 /**
- * Updates the chart with the fetched historical data.
+ * Updates the humidity gauge with new values
+ * @param {number} current - The current humidity
+ * @param {number} threshold - The humidity threshold
  */
-function updateChart(historyData) {
-  // Sort by timestamp if not already
-  historyData.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-
-  const labels = historyData.map((entry) => {
-    const date = new Date(entry.timestamp);
-    // Example: "Mar 1, 12:00"
-    return date.toLocaleString();
-  });
-
-  const temps = historyData.map((entry) => entry.temperature);
-
-  tempChart.data.labels = labels;
-  tempChart.data.datasets[0].data = temps;
-  tempChart.update();
+function updateHumidityGauge(current, threshold) {
+  // Calculate percentage (humidity is already 0-100%)
+  const percentage = Math.min(current, 100);
+  
+  // Update gauge value
+  humidityGauge.data.datasets[0].data = [percentage, 100 - percentage];
+  humidityGauge.update();
+  
+  // Update text display
+  currentHumidityEl.textContent = current.toFixed(1);
+  humidityThresholdEl.textContent = threshold.toFixed(1);
+  
+  // Apply visual indication if humidity exceeds threshold
+  if (current > threshold) {
+    currentHumidityEl.parentElement.style.color = '#f44336';
+  } else {
+    currentHumidityEl.parentElement.style.color = '#333';
+  }
 }

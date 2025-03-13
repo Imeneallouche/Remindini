@@ -26,6 +26,9 @@ const updateHumidityThresholdBtn = document.getElementById("updateHumidityThresh
 
 const signOutBtn = document.getElementById("signOutBtn");
 
+// Sidebar header element
+const sidebarHeader = document.querySelector(".sidebar-header");
+
 // State variables
 let smsEnabled = false;
 let tempEnabled = false;
@@ -48,6 +51,11 @@ document.addEventListener("DOMContentLoaded", () => {
   updateReminderBtn.addEventListener("click", updateReminderDuration);
   updateTempThresholdBtn.addEventListener("click", updateTempThreshold);
   updateHumidityThresholdBtn.addEventListener("click", updateHumidityThreshold);
+
+  // 3. Add click event for sidebar header to navigate to dashboard
+  sidebarHeader.addEventListener("click", () => {
+    window.location.href = "/dashboard";
+  });
 
   // Optional: sign out logic
   if (signOutBtn) {
