@@ -15,7 +15,7 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 app = Flask(__name__)
 app.secret_key = "secret_key"  
 
-BACKEND_URL = "http://192.168.1.37:5000"  
+BACKEND_URL = "http://127.0.0.1:5000"  
 
 
 """To get the user info"""
@@ -113,9 +113,25 @@ def oauth2callback():
     response = requests.post(f"{BACKEND_URL}/api/save_user", json=data)
 
     if response.status_code == 200:
+        # Store all user attributes in session
+        data = response.json()
+        # Store all user attributes in session
+        session["id"] = data.get("id")
+        session["username"] = data.get("username")
+        session["phone_number"] = data.get("phone_number")
+        session["sms_service_activated"] = data.get("sms_service_activated")
+        session["temperature_service_activate"] = data.get("temperature_service_activate")
+        session["humidity_service_activate"] = data.get("humidity_service_activate")
+        session["temperature_treshold"] = data.get("temperature_treshold")
+        session["humidity_treshold"] = data.get("humidity_treshold")
+        session["reminder_delay"] = data.get("reminder_delay")
+        session["reminder_unit"] = data.get("reminder_unit")
+
         return redirect(url_for("dashboard"))
+    
     elif response.status_code == 409: 
         return redirect(url_for("signup", error="Email already registered. Please sign in."))
+    
     else:
         return jsonify({"error": "Error registering user on server", "details": response.text}), 400
 
@@ -164,9 +180,21 @@ def signin_callback():
 
     if response.status_code == 200:
         data = response.json()
-        session["username"] = data["username"]
-        session["phone_number"] = data["phone_number"]
+
+        # Store all user attributes in session
+        session["id"] = data.get("id")
+        session["username"] = data.get("username")
+        session["phone_number"] = data.get("phone_number")
+        session["sms_service_activated"] = data.get("sms_service_activated")
+        session["temperature_service_activate"] = data.get("temperature_service_activate")
+        session["humidity_service_activate"] = data.get("humidity_service_activate")
+        session["temperature_treshold"] = data.get("temperature_treshold")
+        session["humidity_treshold"] = data.get("humidity_treshold")
+        session["reminder_delay"] = data.get("reminder_delay")
+        session["reminder_unit"] = data.get("reminder_unit")
+        
         return redirect(url_for("dashboard"))
+    
     elif response.status_code == 403:
         return redirect(url_for("signup", error="You don't have an account with this email. Please sign up first."))
     
@@ -185,15 +213,67 @@ def signout():
 def dashboard():
     if "google_token" not in session:
         return redirect(url_for("signup"))
-    return render_template("dashboard.html", username=session.get("username"))
+    return render_template("dashboard.html", 
+                           id=session.get("id"),
+                           username=session.get("username"), 
+                           phone_number=session.get("phone_number"),
+                           email=session.get("email"),
+                           sms_service_activated=session.get("sms_service_activated"),
+                           temperature_service_activate=session.get("temperature_service_activate"),
+                           humidity_service_activate=session.get("humidity_service_activate"),
+                           temperature_treshold=session.get("temperature_treshold"),
+                           humidity_treshold=session.get("humidity_treshold"),
+                           reminder_delay=session.get("reminder_delay"),
+                           reminder_unit=session.get("reminder_unit"))
 
 
 
-@app.route("/settings")
+@app.route("/settings", methods=["GET", "POST"])
 def settings():
     if "google_token" not in session:
         return redirect(url_for("signup"))
-    return render_template("settings.html", username=session.get("username"), phone_number=session.get("phone_number"))
+
+    user_id = session.get("id")
+
+    if request.method == "POST":
+        data = request.get_json()
+
+        phone_number = data.get("phone_number")
+        sms_service_activated = data.get("sms_service_activated")
+        reminder_value = data.get("reminder_value")
+        reminder_unit = data.get("reminder_unit")
+
+        payload = {}
+        if phone_number:
+            payload["phone_number"] = phone_number
+        if sms_service_activated is not None:
+            payload["sms_service_activated"] = sms_service_activated
+        if reminder_value is not None and reminder_unit is not None:
+            payload["reminder_value"] = int(reminder_value)
+            payload["reminder_unit"] = reminder_unit
+        if "temperature_service_activate" in data:
+            payload["temperature_service_activate"] = data["temperature_service_activate"]
+        if "humidity_service_activate" in data:
+            payload["humidity_service_activate"] = data["humidity_service_activate"]
+        if "temperature_treshold" in data:
+            payload["temperature_treshold"] = float(data["temperature_treshold"])
+        if "humidity_treshold" in data:
+            payload["humidity_treshold"] = float(data["humidity_treshold"])
+
+
+        response = requests.put(f"{BACKEND_URL}/api/update_user/{user_id}", json=payload)
+        if response.status_code == 200:
+            updated_data = response.json()
+            print("Updated data:", updated_data)
+            session.update(updated_data)  # Sync session with updated data
+            return jsonify({"success": True, **updated_data}), 200
+
+        return jsonify({"success": False}), 400
+
+    return render_template("settings.html", **session)
+
+
+
 
 
 

@@ -1,7 +1,7 @@
 // dashboard.js
 
 // The URL of your Flask server (running on Raspberry Pi)
-const SERVER_URL = "http://<RASPBERRY_PI_IP>:5000";
+const SERVER_URL = "http://127.0.0.1:5000";
 
 // DOM elements for SMS stats
 const smsSuccessCountEl = document.getElementById("smsSuccessCount");
@@ -13,6 +13,7 @@ const tempThresholdEl = document.getElementById("tempThreshold");
 const humidityThresholdEl = document.getElementById("humidityThreshold");
 const refreshGaugesBtn = document.getElementById("refreshGaugesBtn");
 
+console.log("Refresh button element:", refreshGaugesBtn);
 // Sidebar header element
 const sidebarHeader = document.querySelector(".sidebar-header");
 
@@ -31,9 +32,15 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchEnvironmentalData();
   
   // 4. Set up refresh button
-  refreshGaugesBtn.addEventListener("click", () => {
-    fetchEnvironmentalData();
-  });
+  if (refreshGaugesBtn) {
+    console.log("Adding click event listener to refresh button");
+    refreshGaugesBtn.addEventListener("click", () => {
+      console.log("Refresh button clicked");
+      fetchEnvironmentalData();
+    });
+  } else {
+    console.error("Refresh button element not found");
+  }
   
   // 5. Set up auto-refresh interval (every 30 seconds)
   setInterval(fetchEnvironmentalData, 30000);
@@ -104,20 +111,36 @@ function initGauges() {
     }
   });
 }
-
-/**
- * Fetches the SMS stats (success count) for the current week.
- */
 async function fetchSmsStats() {
   try {
-    const response = await fetch(`${SERVER_URL}/api/sms-stats?week=current`);
+    console.log("Fetching SMS stats...");
+    // Si vous utilisez l'email passé via un input caché
+    const userEmail = document.getElementById('userEmail')?.value;
+    console.log("User email:", userEmail);
+    
+    // Construire l'URL avec ou sans paramètre d'email
+    let url = `${SERVER_URL}/api/sms-stats`;
+    if (userEmail) {
+      url += `?email=${encodeURIComponent(userEmail)}`;
+    }
+    console.log("Fetching from URL:", url);
+    
+    const response = await fetch(url);
+    console.log("Response status:", response.status);
+    
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Error response:", errorText);
       throw new Error(`Error fetching SMS stats: ${response.status}`);
     }
+    
     const data = await response.json();
+    console.log("Received data:", data);
+    
+    // Update the UI with the SMS count
     smsSuccessCountEl.textContent = `${data.successCount} SMS`;
   } catch (error) {
-    console.error(error);
+    console.error("Fetch SMS stats error:", error);
     smsSuccessCountEl.textContent = "-- SMS";
   }
 }
@@ -126,18 +149,39 @@ async function fetchSmsStats() {
  * Fetches environmental data (temperature and humidity) from the server.
  */
 async function fetchEnvironmentalData() {
+  console.log("fetchEnvironmentalData function called");
   try {
-    const response = await fetch(`${SERVER_URL}/api/environmental-data`);
+    // Get the user email from the hidden input
+    const userEmail = document.getElementById('userEmail')?.value;
+    console.log("User email for environmental data:", userEmail);
+    
+    if (!userEmail) {
+      console.error("User email not found");
+      throw new Error('User email not found');
+    }
+    
+    const url = `${SERVER_URL}/api/environmental-data/${encodeURIComponent(userEmail)}`;
+    console.log("Fetching environmental data from:", url);
+    
+    const response = await fetch(url);
+    console.log("Environmental data response status:", response.status);
+    
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Error response:", errorText);
       throw new Error(`Error fetching environmental data: ${response.status}`);
     }
+    
     const data = await response.json();
+    console.log("Received environmental data:", data);
     
     // Update gauges with received data
     updateTemperatureGauge(data.temperature.current, data.temperature.threshold);
     updateHumidityGauge(data.humidity.current, data.humidity.threshold);
+    
+    console.log("Gauges updated successfully");
   } catch (error) {
-    console.error(error);
+    console.error("Environmental data error:", error);
     currentTemperatureEl.textContent = "--";
     currentHumidityEl.textContent = "--";
     tempThresholdEl.textContent = "--";

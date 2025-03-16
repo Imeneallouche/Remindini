@@ -94,6 +94,12 @@
   cursor: pointer;
 }
 
+.app-logo {
+  margin-right: 10px;
+  height: 70%;
+  width: 70%;
+}
+
 /* Cards Section */
 .cards-section {
   padding: 1rem;
