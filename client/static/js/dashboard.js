@@ -1,7 +1,7 @@
 // dashboard.js
 
 // The URL of your Flask server (running on Raspberry Pi)
-const SERVER_URL = "http://127.0.0.1:5000";
+const SERVER_URL = "http://<Server's ip>:5000";
 
 // DOM elements for SMS stats
 const smsSuccessCountEl = document.getElementById("smsSuccessCount");
