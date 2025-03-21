@@ -15,7 +15,7 @@ os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 app = Flask(__name__)
 app.secret_key = "secret_key"  
 
-BACKEND_URL = "http://127.0.0.1:5000"  
+BACKEND_URL = "http://<Server's ip>:5000"  
 
 
 """To get the user info"""
