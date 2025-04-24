@@ -54,6 +54,26 @@ It delivers timely SMS notifications for scheduled events or when environmental 
 ## Architecture
 
 ```mermaid
+flowchart LR
+  subgraph Client
+    direction TB
+    U[Users] --> RA[Remindini App]
+    A[Admin] --> RI[RaspiSMS Interface]
+    RA -->|REST API / WebSocket| CA[Control Application]
+    RI -->|REST API / WebSocket| CA
+  end
+
+  subgraph RaspberryPi
+    direction TB
+    CA --> GAM[Gammu]
+    GAM --> GC[Google Calendar API]
+    GAM --> RS[RsapiSMS]
+    CA --> EP[Edge Platform]
+    CA --> DB[(PostgreSQL Database)]
+    CA --> GSM[GSM Module - SIM800L]
+    CA --> TM[Temperature Sensor - DHT22]
+    CA --> HM[Humidity Sensor - DHT22]
+  end
 ```
 
 ---
@@ -175,6 +195,41 @@ DEFAULT_HUM_THRESHOLD=90.0
 ## Database Schema
 
 ```mermaid
+erDiagram
+    USER {
+        Integer id PK
+        String username
+        String email
+        String phone_number
+        Boolean sms_service_activated
+        Boolean temperature_service_activate
+        Boolean humidity_service_activate
+        Float temperature_threshold
+        Float humidity_threshold
+        Integer reminder_delay
+        String reminder_unit
+        Integer token_id FK
+    }
+    TOKEN {
+        Integer id PK
+        String token
+        String refresh_token
+        String token_uri
+        String client_id
+        String client_secret
+        String scopes
+        String expiry
+    }
+    EVENT_NOTIFICATION {
+        Integer id PK
+        String event_id
+        Integer user_id FK
+    }
+
+    USER ||--|| TOKEN           : "has_one"
+    USER ||--o{ EVENT_NOTIFICATION : "has_many"
+    TOKEN }|..|{ USER           : "belongs_to"
+    EVENT_NOTIFICATION }o..|| USER : "belongs_to"
 
 ```
 
